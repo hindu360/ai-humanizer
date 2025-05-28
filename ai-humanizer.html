@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI to Human Text Converter (FREE)</title>
+</head>
+<body>
+  <h2>Paste AI Text Below</h2>
+  <textarea id="inputText" rows="10" cols="100" placeholder="Paste your AI-generated content here..."></textarea><br><br>
+  <button onclick="humanize()">🔁 Humanize Text</button>
+
+  <h3>Humanized Output:</h3>
+  <textarea id="outputText" rows="10" cols="100" readonly placeholder="You'll see the human-like version here..."></textarea>
+
+  <script>
+    async function humanize() {
+      const input = document.getElementById('inputText').value;
+
+      const response = await fetch("https://api-inference.huggingface.co/models/google/flan-t5-large", {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer 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",  // Replace with your own token if needed
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          inputs: `Paraphrase this text in a more natural human tone: ${input}`
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data && data[0] && data[0].generated_text) {
+        document.getElementById('outputText').value = data[0].generated_text;
+      } else {
+        document.getElementById('outputText').value = "⚠️ Error: Model response missing. Try again later.";
+        console.log(data);
+      }
+    }
+  </script>
+</body>
+</html>
